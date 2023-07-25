@@ -1,0 +1,24 @@
+<RCC>
+  <qresource prefix="images">
+    <file>res/drawable/icons/next_icon.svg</file>
+    <file>res/drawable/icons/arrow-down-sign-to-right.png</file>
+    <file>res/drawable/icons/search_line_padding-left.png</file>
+    <file>res/drawable/icons/add.png</file>
+    <file>res/drawable/icons/device_line.png</file>
+    <file>res/drawable/icons/device.png</file>
+    <file>res/drawable/icons/user_line.png</file>
+    <file>res/drawable/icons/user.png</file>
+    <file>res/drawable/icons/manage_line.png</file>
+    <file>res/drawable/icons/manage.png</file>
+    <file>res/drawable/icons/edit_black_icon.svg</file>
+    <file>res/drawable/icons/delete_white.svg</file>
+    <file>res/drawable/icons/anh-background-y-te_034616052.jpg</file>
+    <file>res/drawable/icons/delete_red_icon.svg</file>
+    <file>res/drawable/icons/add_icon.svg</file>
+    <file>res/drawable/icons/export_icon.svg</file>
+    <file>res/drawable/icons/edit_icon.svg</file>
+    <file>res/drawable/icons/back_icon.svg</file>
+    <file>res/drawable/icons/vatar.jpg</file>
+    <file>res/drawable/icons/icon.png</file>
+  </qresource>
+</RCC>
