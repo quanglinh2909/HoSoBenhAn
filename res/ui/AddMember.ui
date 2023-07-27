@@ -78,7 +78,7 @@ background-color:#fff;
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-791</y>
             <width>1121</width>
             <height>1675</height>
            </rect>
@@ -476,6 +476,9 @@ border-radius: 5px;</string>
                           <string notr="true">padding-left:5px;
 border: 1px solid rgb(199, 199, 199);
 border-radius: 5px;</string>
+                         </property>
+                         <property name="displayFormat">
+                          <string>dd/MM/yyyy</string>
                          </property>
                         </widget>
                        </item>
@@ -923,6 +926,9 @@ border-radius: 5px;</string>
 border: 1px solid rgb(199, 199, 199);
 border-radius: 5px;</string>
                          </property>
+                         <property name="displayFormat">
+                          <string>dd/MM/yyyy</string>
+                         </property>
                         </widget>
                        </item>
                        <item>
@@ -1328,6 +1334,11 @@ margin-top:10px;</string>
                   <height>100</height>
                  </size>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
                 <property name="styleSheet">
                  <string notr="true">border: 1px solid rgb(199, 199, 199);
 border-radius: 5px;</string>
@@ -1374,6 +1385,11 @@ border-radius: 5px;</string>
               </item>
               <item>
                <widget class="QTextEdit" name="textEditCDB">
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
                 <property name="styleSheet">
                  <string notr="true">border: 1px solid rgb(199, 199, 199);
 border-radius: 5px;</string>
@@ -4231,6 +4247,11 @@ border-radius: 5px;
                        <height>35</height>
                       </size>
                      </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>12</pointsize>
+                      </font>
+                     </property>
                      <property name="placeholderText">
                       <string>Nhập triệu chứng bệnh...</string>
                      </property>
@@ -4426,6 +4447,11 @@ border-radius: 5px;
                        <width>16777215</width>
                        <height>35</height>
                       </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>12</pointsize>
+                      </font>
                      </property>
                      <property name="placeholderText">
                       <string>Nhập triệu chứng bệnh...</string>
@@ -4623,6 +4649,11 @@ border-radius: 5px;
                        <height>35</height>
                       </size>
                      </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>12</pointsize>
+                      </font>
+                     </property>
                      <property name="placeholderText">
                       <string>Nhập thuốc điều trị...</string>
                      </property>
@@ -4673,6 +4704,11 @@ border-radius: 5px;
               </item>
               <item>
                <widget class="QTextEdit" name="textEditNote">
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
                 <property name="styleSheet">
                  <string notr="true">border: 1px solid rgb(199, 199, 199);
 border-radius: 5px;</string>

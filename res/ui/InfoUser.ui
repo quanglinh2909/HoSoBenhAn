@@ -71,8 +71,8 @@ background-color:#fff;
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>969</width>
-           <height>1330</height>
+           <width>952</width>
+           <height>1389</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
@@ -449,6 +449,58 @@ background-color:#fff;
            </widget>
           </item>
           <item>
+           <widget class="QFrame" name="frame_23">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_14">
+             <item>
+              <widget class="QLabel" name="label_15">
+               <property name="minimumSize">
+                <size>
+                 <width>200</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>200</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>13</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Loại:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="lbBirday_6">
+               <property name="font">
+                <font>
+                 <pointsize>13</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Nội trú</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
            <widget class="QFrame" name="frame_21">
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
@@ -627,7 +679,7 @@ background-color:#fff;
               <number>0</number>
              </property>
              <property name="leftMargin">
-              <number>0</number>
+              <number>9</number>
              </property>
              <property name="topMargin">
               <number>0</number>
@@ -654,6 +706,11 @@ background-color:#fff;
              </item>
              <item>
               <widget class="QFrame" name="frame_14">
+               <property name="styleSheet">
+                <string notr="true">#frame_14{
+border: 1px solid #ccc
+}</string>
+               </property>
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
                </property>
@@ -985,6 +1042,11 @@ background-color:#fff;
              </item>
              <item>
               <widget class="QFrame" name="frame_15">
+               <property name="styleSheet">
+                <string notr="true">#frame_15{
+border: 1px solid #ccc
+}</string>
+               </property>
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
                </property>
@@ -1239,6 +1301,11 @@ background-color:#fff;
              </item>
              <item>
               <widget class="QFrame" name="frame_16">
+               <property name="styleSheet">
+                <string notr="true">#frame_16{
+border: 1px solid #ccc
+}</string>
+               </property>
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
                </property>
@@ -1493,6 +1560,11 @@ background-color:#fff;
              </item>
              <item>
               <widget class="QFrame" name="frame_17">
+               <property name="styleSheet">
+                <string notr="true">#frame_17{
+border: 1px solid #ccc
+}</string>
+               </property>
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
                </property>
@@ -2110,7 +2182,6 @@ background-color:#fff;
            </property>
            <property name="font">
             <font>
-             <pointsize>12</pointsize>
              <weight>62</weight>
              <bold>true</bold>
             </font>
@@ -2156,7 +2227,6 @@ border-radius: 5px;</string>
            </property>
            <property name="font">
             <font>
-             <pointsize>12</pointsize>
              <weight>62</weight>
              <bold>true</bold>
             </font>
@@ -2189,7 +2259,6 @@ border-radius: 5px;</string>
            </property>
            <property name="font">
             <font>
-             <pointsize>12</pointsize>
              <weight>62</weight>
              <bold>true</bold>
             </font>

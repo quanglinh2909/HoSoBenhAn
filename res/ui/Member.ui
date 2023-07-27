@@ -117,7 +117,7 @@
              <string/>
             </property>
            </widget>
-           <widget class="QLineEdit" name="edtSearchMemberType">
+           <widget class="QLineEdit" name="edtSearchMemberNT">
             <property name="geometry">
              <rect>
               <x>70</x>

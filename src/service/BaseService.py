@@ -56,6 +56,14 @@ class BaseService():
             self.session.rollback()
             return False
 
+    def remove(self, id, Entity):
+        try:
+            self.session.query(Entity).filter(Entity.ID == id).update({"IsDelete": True})
+            self.session.commit()
+            return True
+        except Exception as e:
+            self.session.rollback()
+            return False
 
     def getAll(self, Entity):
         try:
@@ -63,7 +71,6 @@ class BaseService():
         except Exception as e:
             print(e)
             return []
-
 
     @abstractmethod
     def getById(self, id):

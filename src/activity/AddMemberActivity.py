@@ -44,7 +44,7 @@ class AddMemberActivity(QMainWindow, Ui_MainWindow):
         self.dateEditIn.setDate(QtCore.QDate.currentDate())
 
     def handleEvent(self):
-        # self.btnCancel.clicked.connect(self.closeWin)
+        self.btnBack.clicked.connect(self.closeWin)
         # self.btnAddCamera.clicked.connect(self.save)
         # self.btnRunTestCamera.clicked.connect(self.runTestCamera)
         self.btnAddTrieuChung.clicked.connect(
@@ -168,8 +168,6 @@ class AddMemberActivity(QMainWindow, Ui_MainWindow):
             layout.itemAt(i).widget().setParent(None)
 
     def closeEvent(self, event):
-        if self.streamVideo is not None:
-            self.streamVideo.stop()
         event.accept()
 
     def closeWin(self):

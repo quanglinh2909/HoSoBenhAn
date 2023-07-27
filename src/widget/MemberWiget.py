@@ -1,13 +1,18 @@
+from datetime import datetime
+
 from PyQt5 import QtWidgets, QtGui, QtCore
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPixmap, QIcon
-from PyQt5.QtWidgets import QMainWindow, QHeaderView, QTableWidgetItem, QLabel
+from PyQt5.QtWidgets import QMainWindow, QHeaderView, QTableWidgetItem, QLabel, QMessageBox
 
 from res.components.pyqt_toast.toast import Toast
 from res.layout.MemberLayout import Ui_Form
 from src.activity.AddMemberActivity import AddMemberActivity
+from src.activity.InfoMemberActivity import InfoMemberActivity
 from src.constants.Global import NOI_TRU
+from src.model.Member import Member
 from src.service.MemberService import MemberService
+from src.utils.Notification import confirmMessageBox
 
 
 class MemberWiget(QMainWindow, Ui_Form):
@@ -34,17 +39,26 @@ class MemberWiget(QMainWindow, Ui_Form):
         self.tbMember.clicked.connect(self.on_cell_clicked)
         self.btnBackPage.clicked.connect(self.backPage)
         self.btnNextPage.clicked.connect(self.nextPage)
+        self.edtSearchMemberNT.textChanged.connect(self.search)
+
+    def search(self):
+        key = self.edtSearchMemberNT.text()
+        if key == "":
+            self.loadData()
+            return
+        self.list = self.memberService.search(key, 1, 100, NOI_TRU)
+        self.loadData(self.list)
+        self.page = 1
+        self.count = 0
 
     def nextPage(self):
-        self.count = int(self.page * 100)
         self.page += 1
-        if self.page > self.totalPage:
-            self.page = self.totalPage
+        if self.page >= self.totalPage:
+            self.page = int(self.totalPage)
             return
         self.loadData()
 
     def backPage(self):
-        self.count = int(self.page )
 
         self.page -= 1
 
@@ -56,18 +70,34 @@ class MemberWiget(QMainWindow, Ui_Form):
     def on_cell_clicked(self, item):
         # Lấy giá trị của ô được click và in ra màn hình
         index = item.row()
-        print(f"Clicked value: {index}")
+        if index >= len(self.list):
+            return
+        member = self.list[index]
+        self.infoMemberActivity = InfoMemberActivity(parent=self, mainParent=self.parent, member=member)
+        self.infoMemberActivity.show()
+        self.infoMemberActivity.reloadSignal.connect(self.reloadData)
+
+
+    def reloadData(self,check):
+        if check is False:
+           self.loadData()
+        else:
+            self.loadData(self.list)
 
     def addMember(self):
         self.addMemberActivity = AddMemberActivity(parent=self, mainParent=self.parent)
         self.addMemberActivity.show()
 
-    def loadData(self):
+
+    def loadData(self, list=None):
         # clear table
         self.tbMember.setRowCount(0)
-
-        self.list = self.memberService.getPage(self.page, 100, NOI_TRU)
-        self.total = self.memberService.getTotal(NOI_TRU)
+        if list is None:
+            self.list = self.memberService.getPage(self.page, 100, NOI_TRU)
+            self.total = self.memberService.getTotal(NOI_TRU)
+        else:
+            self.list = list
+            self.total = len(list)
         self.lbTottal.setText("Tổng: " + str(self.total))
         self.totalPage = self.total / 100
         if self.total % 100 != 0:
@@ -76,6 +106,7 @@ class MemberWiget(QMainWindow, Ui_Form):
         self.lbPage.setText("Trang: " + str(int(self.page)) + "/" + str(int(self.totalPage)))
 
         row = 0
+        self.count = int(self.page * 100 - 100)
         self.tbMember.setRowCount(len(self.list))
         for item in self.list:
             self.tbMember.setRowHeight(row, 100)
@@ -126,7 +157,12 @@ class MemberWiget(QMainWindow, Ui_Form):
             self.count += 1
 
     def on_delete_clicked(self, row, item):
-        print(item.ID)
+        returnValue, msgBox = confirmMessageBox("Xóa thành viên", "Bạn có chắc muốn xóa thành viên này không?")
+        if returnValue == QMessageBox.Ok:
+            self.memberService.remove(item.ID, Member)
+            self.loadData()
+            self.toast.showToast("Xóa thành viên thành công", type=Toast.ERROR)
+
 
     def getText(self, text):
         if text == None or text == "":

@@ -54,11 +54,11 @@ class Ui_Form(object):
 "")
         self.btnAddMember.setText("")
         self.btnAddMember.setObjectName("btnAddMember")
-        self.edtSearchMemberType = QtWidgets.QLineEdit(self.VehicleTypeOptionBlankFrame_2)
-        self.edtSearchMemberType.setGeometry(QtCore.QRect(70, 5, 300, 40))
-        self.edtSearchMemberType.setMinimumSize(QtCore.QSize(250, 40))
-        self.edtSearchMemberType.setMaximumSize(QtCore.QSize(300, 16777215))
-        self.edtSearchMemberType.setStyleSheet("color: black;\n"
+        self.edtSearchMemberNT = QtWidgets.QLineEdit(self.VehicleTypeOptionBlankFrame_2)
+        self.edtSearchMemberNT.setGeometry(QtCore.QRect(70, 5, 300, 40))
+        self.edtSearchMemberNT.setMinimumSize(QtCore.QSize(250, 40))
+        self.edtSearchMemberNT.setMaximumSize(QtCore.QSize(300, 16777215))
+        self.edtSearchMemberNT.setStyleSheet("color: black;\n"
 "    background-color: white;\n"
 "    border-radius: 20px;\n"
 "    background-image:url(:/images/res/drawable/icons/search_line_padding-left.png);\n"
@@ -68,7 +68,7 @@ class Ui_Form(object):
 "    font: 10pt \"Open Sans\";\n"
 "    margin-left: 5px;\n"
 "    margin-right: 5px;")
-        self.edtSearchMemberType.setObjectName("edtSearchMemberType")
+        self.edtSearchMemberNT.setObjectName("edtSearchMemberNT")
         self.gridLayout_43.addWidget(self.VehicleTypeOptionBlankFrame_2, 0, 0, 1, 1)
         self.verticalLayout.addWidget(self.VehicleTypeOptionFrame)
         self.tbMember = QtWidgets.QTableWidget(self.frame)
@@ -210,7 +210,7 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
-        self.edtSearchMemberType.setPlaceholderText(_translate("Form", "Nhập tên hoặc CCCD..."))
+        self.edtSearchMemberNT.setPlaceholderText(_translate("Form", "Nhập tên hoặc CCCD..."))
         item = self.tbMember.horizontalHeaderItem(0)
         item.setText(_translate("Form", "STT"))
         item = self.tbMember.horizontalHeaderItem(1)
