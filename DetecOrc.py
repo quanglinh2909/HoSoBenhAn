@@ -4,19 +4,25 @@
 # results = model.predict(source="demo/bien-so-xe_0401085240.jpg", conf=0.5)
 import math
 
+from ultralytics import YOLO
+
+
 # license plate type classification helper function
 def linear_equation(x1, y1, x2, y2):
     b = y1 - (y2 - y1) * x1 / (x2 - x1)
     a = (y1 - b) / x1
     return a, b
 
+
 def check_point_linear(x, y, x1, y1, x2, y2):
     a, b = linear_equation(x1, y1, x2, y2)
-    y_pred = a*x+b
-    return(math.isclose(y_pred, y, abs_tol = 3))
+    y_pred = a * x + b
+    return (math.isclose(y_pred, y, abs_tol=3))
+
 
 def detect_plate(results):
-    listName = ['1', '2', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'K', 'L', 'M', '3', 'N', 'P', 'S', 'T', 'U', 'V', 'X', 'Y', 'Z', '0', '4', '5', '6', '7', '8', '9', 'A']
+    listName = ['1', '2', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'K', 'L', 'M', '3', 'N', 'P', 'S', 'T', 'U', 'V', 'X', 'Y',
+                'Z', '0', '4', '5', '6', '7', '8', '9', 'A']
 
     for result in results:
         bb_list = result.boxes.numpy()
@@ -32,12 +38,14 @@ def detect_plate(results):
             x_c = (xyxy[0][0] + xyxy[0][2]) / 2
             y_c = (xyxy[0][1] + xyxy[0][3]) / 2
             cls = bb.cls
+            conf = bb.conf
+            # print(listName[int(cls[0])], conf[0])
             y_sum += y_c
             center_list.append([x_c, y_c, listName[int(cls[0])]])
 
             # find 2 point to draw line
-        if len(center_list) <= 0:
-            return ""
+            if len(center_list) <= 0:
+                return ""
         l_point = center_list[0]
         r_point = center_list[0]
         for cp in center_list:
@@ -74,6 +82,13 @@ def detect_plate(results):
         return license_plate
 
 
+# model_plate_number = YOLO("ORC_288_n.onnx")  # initialize
+#
+# results3 = model_plate_number.predict(source="test3.jpg", conf=0.4, imgsz=288, agnostic_nms=True)
+# t = detect_plate(results3)
+# print("ban dau: " + t)
+# results3 = model_plate_number.predict(source="test2.jpg", conf=0.4, imgsz=288, agnostic_nms=True)
+# t = detect_plate(results3)
+# print("cai tieng: " + t)
 
-
-
+# 6DF2-05061

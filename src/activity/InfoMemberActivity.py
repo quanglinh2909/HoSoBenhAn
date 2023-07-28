@@ -11,6 +11,7 @@ from res.layout.InfoMemberLayout import Ui_MainWindow
 from src.activity.EditMemberActivity import EditMemberActivity
 from src.constants.Global import NOI_TRU, NGOAI_TRU
 from src.service.MemberService import MemberService
+from src.utils.ecportPDF import write_to_pdf_with_image_and_content
 
 
 class InfoMemberActivity(QMainWindow, Ui_MainWindow):
@@ -36,6 +37,10 @@ class InfoMemberActivity(QMainWindow, Ui_MainWindow):
     def handleEvent(self):
         self.btnBack.clicked.connect(self.closeWin)
         self.btnEdit.clicked.connect(self.edit)
+        self.btnExport.clicked.connect(self.export)
+
+    def export(self):
+        write_to_pdf_with_image_and_content(f"d.pdf", self.member)
 
     def edit(self):
         self.editMemberActivity = EditMemberActivity(parent=self, mainParent=self.parent, member=self.member)
@@ -44,7 +49,7 @@ class InfoMemberActivity(QMainWindow, Ui_MainWindow):
 
     def reload(self, memeber=None):
         if self.member.Type != memeber.Type:
-            self.isEdit= "ChangeType"
+            self.isEdit = "ChangeType"
         self.initUi(memeber)
         self.isEdit = 'True'
 
@@ -62,6 +67,17 @@ class InfoMemberActivity(QMainWindow, Ui_MainWindow):
         for i in reversed(range(layout.count())):
             layout.itemAt(i).widget().setParent(None)
 
+    def getAddress(sleft,member):
+        address = ""
+        if member.Address != None and member.Address != "":
+            address += member.Address
+        if member.Ward != None and member.Ward != "":
+            address += ", " + member.Ward
+        if member.District != None and member.District != "":
+            address += ", " + member.District
+        if member.Province != None and member.Province != "":
+            address += ", " + member.Province
+        return address
     def initUi(self, memeber=None):
         if memeber != None:
             self.member = memeber
@@ -74,6 +90,7 @@ class InfoMemberActivity(QMainWindow, Ui_MainWindow):
         self.lbNameRelatives.setText(self.getText(self.member.Relatives))
         self.lbInfoRelatives.setText(self.getText(self.member.InfoRelatives))
         self.lbDateIn.setText(self.getText(self.member.DateIn))
+        self.lbAccommodation.setText(self.getAddress(self.member))
         type = self.member.Type
         if type == NGOAI_TRU:
             type = "Ngoại trú"
@@ -83,15 +100,7 @@ class InfoMemberActivity(QMainWindow, Ui_MainWindow):
             type = "Chưa có thông tin"
         self.lbType.setText(type)
 
-        address = ""
-        if self.member.Ward != None and self.member.Ward != "":
-            address += self.member.Ward
-        if self.member.District != None and self.member.District != "":
-            address += "," + self.member.District
-        if self.member.Province != None and self.member.Province != "":
-            address += "," + self.member.Province
 
-        self.lbInfoRelatives.setText(self.getText(address))
         self.lbCDB.setText("- " + self.getText(self.member.CDB))
         self.lbNote.setText("- " + self.getText(self.member.Note))
 
