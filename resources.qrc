@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="images">
+    <file>res/drawable/icons/print_FILL0_wght400_GRAD0_opsz48.svg</file>
     <file>res/drawable/icons/next_icon.svg</file>
     <file>res/drawable/icons/arrow-down-sign-to-right.png</file>
     <file>res/drawable/icons/search_line_padding-left.png</file>

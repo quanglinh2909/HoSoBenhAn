@@ -1,0 +1,3 @@
+PATH_DATABASE = "assets/database.db"
+NOI_TRU ="NOI_TRU"
+NGOAI_TRU ="NGOAI_TRU"
