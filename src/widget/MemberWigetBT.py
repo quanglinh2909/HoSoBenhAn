@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 
 from PyQt5 import QtWidgets, QtGui, QtCore
@@ -12,6 +13,7 @@ from src.activity.InfoMemberActivity import InfoMemberActivity
 from src.constants.Global import NGOAI_TRU
 from src.model.Member import Member
 from src.service.MemberService import MemberService
+from src.utils.ExportExcel import create_excel_file
 from src.utils.Notification import confirmMessageBox
 
 
@@ -40,6 +42,20 @@ class MemberWigetBT(QMainWindow, Ui_Form):
         self.btnBackPage.clicked.connect(self.backPage)
         self.btnNextPage.clicked.connect(self.nextPage)
         self.edtSearchMemberNT.textChanged.connect(self.search)
+        self.btnPrint.clicked.connect(self.print)
+
+    def print(self):
+        options = QtWidgets.QFileDialog.Options()
+
+        fileName = uuid.uuid4().hex + ".xlsx"
+        fileName, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Save File", fileName,
+                                                            "Excel Files (*.xlsx)", options=options)
+        if fileName:
+            allMember = self.memberService.getAllByType(NGOAI_TRU)
+            try:
+                create_excel_file(fileName, allMember)
+            except Exception as e:
+                pass
 
     def search(self):
         key = self.edtSearchMemberNT.text()

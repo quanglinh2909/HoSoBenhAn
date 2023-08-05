@@ -1,5 +1,6 @@
 import os
 import sys
+import uuid
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
@@ -23,9 +24,14 @@ class Start():
         if len(listUser) <= 0:
             password = "admin"
             passwordHash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-
             user = User(UserName="admin", Password=passwordHash.decode('utf-8'))
             self.userService.create(user)
+
+            password = "doctor"
+            passwordHash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+            user2 = User(ID = uuid.uuid4().hex, UserName="doctor", Password=passwordHash.decode('utf-8'))
+            self.userService.create(user2)
+
 
         self.window = LoginActivity()
         self.window.show()

@@ -10,7 +10,8 @@ from PyQt5.QtWidgets import QDialog, QMainWindow
 from res.components.pyqt_toast.toast import Toast
 from res.layout.InfoMemberLayout import Ui_MainWindow
 from src.activity.EditMemberActivity import EditMemberActivity
-from src.constants.Global import NOI_TRU, NGOAI_TRU
+from src.constants.Global import NOI_TRU, NGOAI_TRU, MANAGER, DOCTOR
+from src.service.ConfigService import ConfigService
 from src.service.MemberService import MemberService
 from src.utils.ecportPDF import write_to_pdf_with_image_and_content
 
@@ -23,6 +24,7 @@ class InfoMemberActivity(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.showMaximized()
         self.isEdit = 'False'
+        self.configService = ConfigService()
 
         self.setWindowTitle("Thông tin bệnh nhân")
         self.parent = parent
@@ -42,12 +44,22 @@ class InfoMemberActivity(QMainWindow, Ui_MainWindow):
         self.btnPrint.clicked.connect(self.print)
 
     def print(self):
-        write_to_pdf_with_image_and_content("assets/print.pdf", self.member)
-        #get the path of the current directory
+        nameManager = self.configService.getByKey(MANAGER)
+        nameDoctor = self.configService.getByKey(DOCTOR)
+        if nameManager is None:
+            nameManager = ""
+        else:
+            nameManager = nameManager.Value
+
+        if nameDoctor is None:
+            nameDoctor = ""
+        else:
+            nameDoctor = nameDoctor.Value
+        write_to_pdf_with_image_and_content("assets/print.pdf", self.member, nameManager, nameDoctor)
+        # get the path of the current directory
         current_dir = os.getcwd()
         urlFile = current_dir + "/assets/print.pdf"
         webbrowser.open(urlFile)
-
 
     def export(self):
         options = QtWidgets.QFileDialog.Options()
@@ -56,7 +68,19 @@ class InfoMemberActivity(QMainWindow, Ui_MainWindow):
         fileName, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Save File", fileName,
                                                             "PDF (*.pdf)", options=options)
         if fileName:
-            write_to_pdf_with_image_and_content(fileName, self.member)
+            nameManager = self.configService.getByKey(MANAGER)
+            nameDoctor = self.configService.getByKey(DOCTOR)
+            if nameManager is None:
+                nameManager = ""
+            else:
+                nameManager = nameManager.Value
+
+            if nameDoctor is None:
+                nameDoctor = ""
+            else:
+                nameDoctor = nameDoctor.Value
+
+            write_to_pdf_with_image_and_content(fileName, self.member, nameManager, nameDoctor)
 
     def edit(self):
         self.editMemberActivity = EditMemberActivity(parent=self, mainParent=self.parent, member=self.member)
@@ -83,7 +107,7 @@ class InfoMemberActivity(QMainWindow, Ui_MainWindow):
         for i in reversed(range(layout.count())):
             layout.itemAt(i).widget().setParent(None)
 
-    def getAddress(sleft,member):
+    def getAddress(sleft, member):
         address = ""
         if member.Address != None and member.Address != "":
             address += member.Address
@@ -94,6 +118,7 @@ class InfoMemberActivity(QMainWindow, Ui_MainWindow):
         if member.Province != None and member.Province != "":
             address += ", " + member.Province
         return address
+
     def initUi(self, memeber=None):
         if memeber != None:
             self.member = memeber
@@ -115,7 +140,6 @@ class InfoMemberActivity(QMainWindow, Ui_MainWindow):
         else:
             type = "Chưa có thông tin"
         self.lbType.setText(type)
-
 
         self.lbCDB.setText("- " + self.getText(self.member.CDB))
         self.lbNote.setText("- " + self.getText(self.member.Note))

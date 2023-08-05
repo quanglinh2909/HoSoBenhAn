@@ -17,11 +17,17 @@ class MemberService(BaseService):
             return self.session.query(Member).where(and_(Member.IsDelete == False, Member.Type == type)).order_by(
                 Member.CreatedAt.desc()).offset((page - 1) * limit).limit(limit).all()
         except Exception as e:
-            return None
+            return []
 
     def getTotal(self, type):
         try:
             return self.session.query(Member).where(and_(Member.IsDelete == False, Member.Type == type)).count()
+        except Exception as e:
+            return None
+
+    def getAllByType(self, type):
+        try:
+            return self.session.query(Member).where(and_(Member.IsDelete == False, Member.Type == type)).all()
         except Exception as e:
             return None
 

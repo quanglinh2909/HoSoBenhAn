@@ -50,7 +50,7 @@ def getAddress(member: Member):
     return address
 
 
-def write_to_pdf_with_image_and_content(file_name, member: Member):
+def write_to_pdf_with_image_and_content(file_name, member: Member, nameManager, nameDoctor):
     font_path1 = r"res/drawable/font/Roboto-Black.ttf"  # Điều chỉnh đường dẫn phù hợp
     font_path2 = r"res/drawable/font/Roboto-Light.ttf"  # Điều chỉnh đường dẫn phù hợp
     # Cài đặt font "Arial Unicode MS"
@@ -169,6 +169,19 @@ def write_to_pdf_with_image_and_content(file_name, member: Member):
     for line in lines:
         y = write_line(" ", f"{line}", c, x, 10, y)
 
+    y = write_line(" ", " ", c, x, x2, y)
+
+    ycurrent = y
+    # chu ky
+    y = write_line("BÁC SĨ ĐIỀU TRỊ", " ", c, 50, x2, y)
+    y = write_line(" ", "(ký và ghi rõ họ tên)", c, 45, 44, y + 10)
+    y = ycurrent
+    y = write_line("GIÁM ĐỐC", " ", c, 400, x2, y)
+    y = write_line(" ", "(ký và ghi rõ họ tên)", c, 400, 380, y + 10)
+
+    y = write_line(" ", " ", c, x, x2, y)
+
+    write_line(nameDoctor, " ", c, 50, x2, y)
+    y = write_line(nameManager, " ", c, 380, x2, y)
+
     c.save()
-
-

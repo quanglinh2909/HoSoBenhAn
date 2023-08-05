@@ -23,7 +23,6 @@ class LoginActivity(QMainWindow, Ui_MainWindow):
         self.LoginBtn.clicked.connect(self.login)
         self.toast = Toast(text="", duration=2, parent=self)
 
-
         self.UserNameTxt.setText("admin")
         self.PasswordTxt.setText("admin")
 
@@ -46,9 +45,6 @@ class LoginActivity(QMainWindow, Ui_MainWindow):
             self.toast.showToast("Đăng nhập thất bại", type=Toast.ERROR)
             return
 
-        self.mainWindowActivity = MainWindowActivity()
+        self.mainWindowActivity = MainWindowActivity(userName=phone)
         self.mainWindowActivity.show()
         self.close()
-
-
-

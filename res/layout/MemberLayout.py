@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\Users\Admin\Downloads\data\HoSoBenhAn\res\ui\Member.ui'
+# Form implementation generated from reading ui file 'D:\HoSoBenhAn\res\ui\Member.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -38,8 +38,9 @@ class Ui_Form(object):
         self.VehicleTypeOptionBlankFrame_2.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.VehicleTypeOptionBlankFrame_2.setFrameShadow(QtWidgets.QFrame.Raised)
         self.VehicleTypeOptionBlankFrame_2.setObjectName("VehicleTypeOptionBlankFrame_2")
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.VehicleTypeOptionBlankFrame_2)
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.btnAddMember = QtWidgets.QPushButton(self.VehicleTypeOptionBlankFrame_2)
-        self.btnAddMember.setGeometry(QtCore.QRect(0, 5, 40, 40))
         self.btnAddMember.setMinimumSize(QtCore.QSize(40, 40))
         self.btnAddMember.setMaximumSize(QtCore.QSize(40, 40))
         self.btnAddMember.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
@@ -54,8 +55,8 @@ class Ui_Form(object):
 "")
         self.btnAddMember.setText("")
         self.btnAddMember.setObjectName("btnAddMember")
+        self.horizontalLayout_3.addWidget(self.btnAddMember)
         self.edtSearchMemberNT = QtWidgets.QLineEdit(self.VehicleTypeOptionBlankFrame_2)
-        self.edtSearchMemberNT.setGeometry(QtCore.QRect(70, 5, 300, 40))
         self.edtSearchMemberNT.setMinimumSize(QtCore.QSize(250, 40))
         self.edtSearchMemberNT.setMaximumSize(QtCore.QSize(300, 16777215))
         self.edtSearchMemberNT.setStyleSheet("color: black;\n"
@@ -69,6 +70,25 @@ class Ui_Form(object):
 "    margin-left: 5px;\n"
 "    margin-right: 5px;")
         self.edtSearchMemberNT.setObjectName("edtSearchMemberNT")
+        self.horizontalLayout_3.addWidget(self.edtSearchMemberNT)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_3.addItem(spacerItem)
+        self.btnPrint = QtWidgets.QPushButton(self.VehicleTypeOptionBlankFrame_2)
+        self.btnPrint.setMinimumSize(QtCore.QSize(100, 30))
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(62)
+        self.btnPrint.setFont(font)
+        self.btnPrint.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btnPrint.setStyleSheet("background-color:#000;\n"
+"color:#fff;\n"
+"font-weight:500;\n"
+"border-radius: 5px;")
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/images/res/drawable/icons/print_FILL0_wght400_GRAD0_opsz48.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnPrint.setIcon(icon)
+        self.btnPrint.setObjectName("btnPrint")
+        self.horizontalLayout_3.addWidget(self.btnPrint)
         self.gridLayout_43.addWidget(self.VehicleTypeOptionBlankFrame_2, 0, 0, 1, 1)
         self.verticalLayout.addWidget(self.VehicleTypeOptionFrame)
         self.tbMember = QtWidgets.QTableWidget(self.frame)
@@ -184,9 +204,9 @@ class Ui_Form(object):
         self.btnBackPage.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btnBackPage.setStyleSheet("background-color:#000;")
         self.btnBackPage.setText("")
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/images/res/drawable/icons/back_icon.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btnBackPage.setIcon(icon)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(":/images/res/drawable/icons/back_icon.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnBackPage.setIcon(icon1)
         self.btnBackPage.setObjectName("btnBackPage")
         self.horizontalLayout_2.addWidget(self.btnBackPage)
         self.btnNextPage = QtWidgets.QPushButton(self.frame_2)
@@ -195,9 +215,9 @@ class Ui_Form(object):
         self.btnNextPage.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btnNextPage.setStyleSheet("background-color:#000;")
         self.btnNextPage.setText("")
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(":/images/res/drawable/icons/next_icon.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btnNextPage.setIcon(icon1)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(":/images/res/drawable/icons/next_icon.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnNextPage.setIcon(icon2)
         self.btnNextPage.setObjectName("btnNextPage")
         self.horizontalLayout_2.addWidget(self.btnNextPage)
         self.horizontalLayout.addWidget(self.frame_2)
@@ -211,6 +231,7 @@ class Ui_Form(object):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
         self.edtSearchMemberNT.setPlaceholderText(_translate("Form", "Nhập tên hoặc CCCD..."))
+        self.btnPrint.setText(_translate("Form", "Xuất file"))
         item = self.tbMember.horizontalHeaderItem(0)
         item.setText(_translate("Form", "STT"))
         item = self.tbMember.horizontalHeaderItem(1)

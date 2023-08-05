@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 
 from PyQt5 import QtWidgets, QtGui, QtCore
@@ -12,6 +13,7 @@ from src.activity.InfoMemberActivity import InfoMemberActivity
 from src.constants.Global import NOI_TRU
 from src.model.Member import Member
 from src.service.MemberService import MemberService
+from src.utils.ExportExcel import create_excel_file
 from src.utils.Notification import confirmMessageBox
 
 
@@ -40,6 +42,20 @@ class MemberWiget(QMainWindow, Ui_Form):
         self.btnBackPage.clicked.connect(self.backPage)
         self.btnNextPage.clicked.connect(self.nextPage)
         self.edtSearchMemberNT.textChanged.connect(self.search)
+        self.btnPrint.clicked.connect(self.print)
+
+    def print(self):
+        options = QtWidgets.QFileDialog.Options()
+
+        fileName = uuid.uuid4().hex + ".xlsx"
+        fileName, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Save File", fileName,
+                                                            "Excel Files (*.xlsx)", options=options)
+        if fileName:
+            allMember = self.memberService.getAllByType(NOI_TRU)
+            try:
+                create_excel_file(fileName, allMember)
+            except Exception as e:
+                pass
 
     def search(self):
         key = self.edtSearchMemberNT.text()
@@ -77,10 +93,9 @@ class MemberWiget(QMainWindow, Ui_Form):
         self.infoMemberActivity.show()
         self.infoMemberActivity.reloadSignal.connect(self.reloadData)
 
-
-    def reloadData(self,check=False):
+    def reloadData(self, check=False):
         if check is False:
-           self.loadData()
+            self.loadData()
         else:
             self.loadData(self.list)
 
@@ -88,8 +103,6 @@ class MemberWiget(QMainWindow, Ui_Form):
         self.addMemberActivity = AddMemberActivity(parent=self, mainParent=self.parent)
         self.addMemberActivity.show()
         self.addMemberActivity.loadDataSignal.connect(self.reloadData)
-
-
 
     def loadData(self, list=None):
         # clear table
@@ -164,7 +177,6 @@ class MemberWiget(QMainWindow, Ui_Form):
             self.memberService.remove(item.ID, Member)
             self.loadData()
             self.toast.showToast("Xóa thành viên thành công", type=Toast.ERROR)
-
 
     def getText(self, text):
         if text == None or text == "":

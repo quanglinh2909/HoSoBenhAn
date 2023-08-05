@@ -6,6 +6,9 @@ from src.service.Connection import Connection
 class BaseService():
     session = Connection.getInstance().session
 
+    def setSession(self, session):
+        self.session = session
+
     def create(self, data):
         try:
             self.session.add(data)

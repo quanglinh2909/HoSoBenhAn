@@ -34,3 +34,30 @@ class Member(Base):
     #benh khac
     OtherMedicalConditions = Column(TEXT, nullable=True)
 
+from marshmallow import Schema, fields
+
+class  MemberSchema(Schema):
+    ID = fields.String()
+    FullName = fields.String()
+    Birthday = fields.String()
+    CCCD = fields.String()
+    Relatives = fields.String()
+    InfoRelatives = fields.String()
+    DateIn = fields.String()
+    Province = fields.String()
+    District = fields.String()
+    Ward = fields.String()
+    Address = fields.String()
+    CDB = fields.String()
+    Note = fields.String()
+    Avatar = fields.String()
+    Type = fields.String()
+    CN = fields.String()
+    DH = fields.String()
+    HA = fields.String()
+    Medicine = fields.String()
+    Symptoms = fields.String()
+    OtherMedicalConditions = fields.String()
+
+
+
