@@ -4,13 +4,16 @@ import uuid
 from datetime import datetime
 
 from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QDialog, QMainWindow
 
+from res.components.Loading import LoadingWidget
 from res.components.pyqt_toast.toast import Toast
 from res.layout.AddMemberLayout import Ui_MainWindow
 from src.constants.Global import NOI_TRU, NGOAI_TRU
 from src.model.Member import Member
 from src.service.MemberService import MemberService
+from src.utils.comon import uploadfile, readImage
 
 
 class EditMemberActivity(QMainWindow, Ui_MainWindow):
@@ -20,8 +23,11 @@ class EditMemberActivity(QMainWindow, Ui_MainWindow):
         super(EditMemberActivity, self).__init__(parent)
         self.setupUi(self)
         self.showMaximized()
+        self.isServert = os.getenv('IS_SEVER')
 
         self.setWindowTitle("Chỉnh sửa bệnh nhân")
+        self.loadingWidget = LoadingWidget(self)
+        self.loadingWidget.startLoading()
         self.parent = parent
         self.member = member
         self.listTrieuChung = dict()
@@ -49,7 +55,7 @@ class EditMemberActivity(QMainWindow, Ui_MainWindow):
             self.comboBox.setCurrentIndex(1)
         self.lineEditRelatives.setText(self.member.Relatives)
         self.urlIMage = self.member.Avatar
-        self.labelImage.setPixmap(QtGui.QPixmap(self.urlIMage))
+
         self.dateEditIn.setDate(QtCore.QDate.fromString(self.member.DateIn, "dd/MM/yyyy"))
         self.lineEditProvince.setText(self.member.Province)
         self.lineEditDistrict.setText(self.member.District)
@@ -95,6 +101,20 @@ class EditMemberActivity(QMainWindow, Ui_MainWindow):
         self.addItem(self.frame_5, self.verticalLayout_6, self.listTrieuChung)
         self.addItem(self.frame_76, self.verticalLayout_15, self.listBenhLyKhac)
         self.addItem(self.frame_92, self.verticalLayout_9, self.listThuocDieuTri)
+
+        if int(self.isServert) == 0:
+            self.l = Loading(member=self.member)
+            self.l.start()
+            self.l.imageSignal.connect(self.loadImagge)
+        else:
+            if os.path.exists(self.urlIMage) and os.path.isfile(self.urlIMage):
+                self.labelImage.setPixmap(QtGui.QPixmap(self.urlIMage))
+
+            self.loadingWidget.stopTopLoading()
+
+    def loadImagge(self, p):
+        self.labelImage.setPixmap(QtGui.QPixmap(p))
+        self.loadingWidget.stopTopLoading()
 
     def handleEvent(self):
         self.btnBack.clicked.connect(self.closeWin)
@@ -181,30 +201,30 @@ class EditMemberActivity(QMainWindow, Ui_MainWindow):
         trieuChung = ""
         for i in range(len(listTextTrieuChung)):
             trieuChung += listTextTrieuChung[i] + "*&**&*"
-
-        avatar = self.getUrl()
+        # url = self.member.Avatar
+        # if self.member.Avatar != self.urlIMage:
+        #     url = uploadfile(self.urlIMage)
         member = Member(ID=self.member.ID, FullName=name, Birthday=birthday, CCCD=cccd, Relatives=nameRelatives,
                         InfoRelatives=infoRelatives, DateIn=dateIn, Province=province, District=district, Ward=ward,
-                        Address=address, CDB=chuanDoanBenh, Note=note, Avatar=avatar, CN=cnResult, DH=dhResult,
+                        Address=address, CDB=chuanDoanBenh, Note=note, CN=cnResult, DH=dhResult,
                         HA=haResult, OtherMedicalConditions=benhLyKhac, Symptoms=trieuChung, Medicine=thuocDieuTri,
                         Type=type)
-        res = self.memberService.update(member)
-        if res:
-            self.coppyImage(avatar, self.urlIMage)
+        # res = self.memberService.update(member)
+        self.loadingWidget.startLoading()
+        self.loadingSave = LoadingSave(member, self.urlIMage)
+        self.loadingSave.start()
+        self.loadingSave.imageSignal.connect(self.saveSuccess)
+
+    def saveSuccess(self, member):
+        self.loadingWidget.stopTopLoading()
+        if member is not None:
+            # if self.
             # self.close()
             self.toast.showToast("Chỉnh sửa thành công", type=Toast.SUCCESS)
             self.reloadSignal.emit(member)
             self.member = member
         else:
             self.toast.showToast("Chỉnh sửa thất bại", type=Toast.ERROR)
-
-    def coppyImage(self, toUrl, fromUrl):
-        import cv2
-
-        # rezise image
-        image = cv2.imread(fromUrl)
-        image = cv2.resize(image, (200, 200))
-        cv2.imwrite(toUrl, image)
 
     def getUrl(self):
         pathRoot = "assets/images/"
@@ -281,3 +301,62 @@ class EditMemberActivity(QMainWindow, Ui_MainWindow):
             if list[key].findChild(QtWidgets.QLineEdit).text().strip() != "":
                 result.append(list[key].findChild(QtWidgets.QLineEdit).text())
         return result
+
+
+class LoadingSave(QThread):
+    imageSignal = pyqtSignal(object)
+
+    def __init__(self, member=None, urlIMage=None):
+        super(LoadingSave, self).__init__()
+        self.member = member
+        self.urlIMage = urlIMage
+        self.memberService = MemberService()
+
+    def run(self):
+        try:
+            url = self.member.Avatar
+            if self.member.Avatar != self.urlIMage:
+                url = uploadfile(self.urlIMage)
+
+            member = self.memberService.getById(self.member.ID)
+            member.FullName = self.member.FullName
+            member.Birthday = self.member.Birthday
+            member.CCCD = self.member.CCCD
+            member.Relatives = self.member.Relatives
+            member.InfoRelatives = self.member.InfoRelatives
+            member.DateIn = self.member.DateIn
+            member.Province = self.member.Province
+            member.District = self.member.District
+            member.Ward = self.member.Ward
+            member.Address = self.member.Address
+            member.CDB = self.member.CDB
+            member.Note = self.member.Note
+            member.CN = self.member.CN
+            member.DH = self.member.DH
+            member.HA = self.member.HA
+            member.OtherMedicalConditions = self.member.OtherMedicalConditions
+            member.Symptoms = self.member.Symptoms
+            member.Medicine = self.member.Medicine
+            member.Type = self.member.Type
+            member.Avatar = url
+            res = self.memberService.update(member)
+            if res:
+                self.imageSignal.emit(member)
+            else:
+                self.imageSignal.emit(None)
+        except Exception as e:
+            print(e)
+            self.imageSignal.emit(None)
+
+
+class Loading(QThread):
+    imageSignal = pyqtSignal(object)
+
+    def __init__(self, member=None):
+        super(Loading, self).__init__()
+        self.member = member
+
+    def run(self):
+        urlAvatar = self.member.Avatar
+        p = readImage(urlAvatar)
+        self.imageSignal.emit(p)

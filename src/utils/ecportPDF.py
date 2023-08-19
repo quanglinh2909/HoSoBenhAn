@@ -1,6 +1,11 @@
+import os
+from io import BytesIO
+
+import requests
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.utils import ImageReader
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
@@ -60,8 +65,27 @@ def write_to_pdf_with_image_and_content(file_name, member: Member, nameManager, 
     # Tạo một file PDF mới
     c = canvas.Canvas(file_name, pagesize=A4)
 
-    # Vẽ hình ảnh bên phải
-    c.drawInlineImage(member.Avatar, 10, 670, width=150, height=160)
+    try:
+        isServer = os.getenv('IS_SEVER')
+        address = os.getenv("ADDRESS")
+        port = os.getenv("PORT_API")
+        # Vẽ hình ảnh bên phải
+        if int(isServer) == 0:
+            image_url = "http://" + str(address) + ":" + str(port) + "/" + member.Avatar
+            response = requests.get(image_url)
+            if response.status_code == 200:
+                # Đọc dữ liệu hình ảnh từ response và chuyển đổi thành BytesIO
+                image_data = ImageReader(BytesIO(response.content))
+
+                # Xác định định dạng của hình ảnh (ở đây là JPEG) và sử dụng nó trong drawImage
+                c.drawImage(image_data, 10, 670, width=150, height=160, mask='auto')
+            else:
+                c.drawInlineImage("res/drawable/icons/vatar.jpg", 10, 670, width=150, height=160)
+        else:
+            c.drawInlineImage(member.Avatar, 10, 670, width=150, height=160)
+    except:
+        print("error")
+        c.drawInlineImage("res/drawable/icons/vatar.jpg", 10, 670, width=150, height=160)
 
     y = 820
     x = 200

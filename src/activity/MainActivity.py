@@ -11,7 +11,7 @@ class MainWindowActivity(QMainWindow, Ui_MainWindow):
         super(MainWindowActivity, self).__init__()
         self.setupUi(self)
         self.showMaximized()
-        self.setWindowTitle("Quản lý bệnh nhân")
+        self.setWindowTitle("Cơ sở BTXH. Ân Phúc")
         self.pageCurrent = None
         self.toast = Toast(text="", duration=2, parent=self)
 

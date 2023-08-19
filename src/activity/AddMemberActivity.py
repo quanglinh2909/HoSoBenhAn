@@ -3,22 +3,29 @@ import os
 import uuid
 from datetime import datetime
 
+import requests
 from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QDialog, QMainWindow
+from dotenv import load_dotenv
 
+from res.components.Loading import LoadingWidget
 from res.components.pyqt_toast.toast import Toast
 from res.layout.AddMemberLayout import Ui_MainWindow
 from src.constants.Global import NOI_TRU, NGOAI_TRU
 from src.model.Member import Member
 from src.service.MemberService import MemberService
+from src.utils.comon import uploadfile
 
 
 class AddMemberActivity(QMainWindow, Ui_MainWindow):
     loadDataSignal = QtCore.pyqtSignal()
+
     def __init__(self, parent=None, mainParent=None):
         super(AddMemberActivity, self).__init__(parent)
         self.setupUi(self)
         self.showMaximized()
+        self.loadingWidget = LoadingWidget(self)
 
         self.setWindowTitle("Thêm bệnh nhân")
         self.parent = parent
@@ -131,27 +138,25 @@ class AddMemberActivity(QMainWindow, Ui_MainWindow):
             trieuChung += listTextTrieuChung[i] + "*&**&*"
 
         id = uuid.uuid4().hex
-        avatar = self.getUrl()
+        avatar = uploadfile(self.urlIMage)
         member = Member(ID=id, FullName=name, Birthday=birthday, CCCD=cccd, Relatives=nameRelatives,
                         InfoRelatives=infoRelatives, DateIn=dateIn, Province=province, District=district, Ward=ward,
                         Address=address, CDB=chuanDoanBenh, Note=note, Avatar=avatar, CN=cnResult, DH=dhResult,
-                        HA=haResult, OtherMedicalConditions=benhLyKhac, Symptoms=trieuChung, Medicine=thuocDieuTri,Type=type)
-        res = self.memberService.create(member)
-        if res:
-            self.coppyImage(avatar, self.urlIMage)
+                        HA=haResult, OtherMedicalConditions=benhLyKhac, Symptoms=trieuChung, Medicine=thuocDieuTri,
+                        Type=type)
+        self.loadingWidget.startLoading()
+        self.loadingSave = LoadingSave(member, self.urlIMage)
+        self.loadingSave.start()
+        self.loadingSave.imageSignal.connect(self.saveSuccess)
+
+    def saveSuccess(self, member):
+        self.loadingWidget.stopTopLoading()
+        if member is not None:
             self.close()
             self.parent.parent.parent.toast.showToast("Thêm thành công", type=Toast.SUCCESS)
             self.loadDataSignal.emit()
         else:
             self.toast.showToast("Thêm thất bại", type=Toast.ERROR)
-
-    def coppyImage(self, toUrl, fromUrl):
-        import cv2
-
-        # rezise image
-        image = cv2.imread(fromUrl)
-        image = cv2.resize(image, (200, 200))
-        cv2.imwrite(toUrl, image)
 
     def getUrl(self):
         pathRoot = "assets/images/"
@@ -226,3 +231,29 @@ class AddMemberActivity(QMainWindow, Ui_MainWindow):
             if list[key].findChild(QtWidgets.QLineEdit).text().strip() != "":
                 result.append(list[key].findChild(QtWidgets.QLineEdit).text())
         return result
+
+
+class LoadingSave(QThread):
+    imageSignal = pyqtSignal(object)
+
+    def __init__(self, member=None, urlIMage=None):
+        super(LoadingSave, self).__init__()
+        self.member = member
+        self.urlIMage = urlIMage
+        self.memberService = MemberService()
+
+    def run(self):
+        try:
+            url = self.member.Avatar
+            if self.member.Avatar != self.urlIMage:
+                url = uploadfile(self.urlIMage)
+            self.member.Avatar = url
+            res = self.memberService.create(self.member)
+            if res:
+                self.imageSignal.emit(self.member)
+            else:
+                self.imageSignal.emit(None)
+        except Exception as e:
+            print('Error: ', e)
+            self.imageSignal.emit(None)
+

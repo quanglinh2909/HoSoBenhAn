@@ -11,6 +11,7 @@ from src.model.User import User
 from src.service.Connection import Connection
 from src.service.UserService import UserService
 
+from dotenv import load_dotenv
 
 class Start():
     def startLayout(self):
@@ -21,6 +22,7 @@ class Start():
         Connection.getInstance()
         self.userService = UserService()
         listUser = self.userService.getAll(User)
+
         if len(listUser) <= 0:
             password = "admin"
             passwordHash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())

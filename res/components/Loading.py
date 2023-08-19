@@ -1,17 +1,18 @@
 
 from PyQt5 import QtCore
 from PyQt5.QtGui import QMovie
-from PyQt5.QtWidgets import QMainWindow, QFrame, QLabel
+from PyQt5.QtWidgets import QMainWindow, QFrame, QLabel, QDesktopWidget
+
 
 class LoadingWidget(QFrame):
     def __init__(self, parent=None):
         super(LoadingWidget, self).__init__(parent)
-        self.parent = parent
+        self.parent = QDesktopWidget().screenGeometry()
 
     def startLoading(self):
         # get width and height of centralwidget
-        width = self.parent.centralwidget.width()
-        height = self.parent.centralwidget.height()
+        width = self.parent.width()
+        height = self.parent.height()
         self.setGeometry(0, 0, width, height+100)
         self.setStyleSheet("background-color: rgba(0, 0, 0,0.5);")
 

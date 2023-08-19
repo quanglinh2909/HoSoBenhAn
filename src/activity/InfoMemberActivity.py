@@ -5,14 +5,18 @@ import webbrowser
 from datetime import datetime
 
 from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QDialog, QMainWindow
+from dotenv import load_dotenv
 
+from res.components.Loading import LoadingWidget
 from res.components.pyqt_toast.toast import Toast
 from res.layout.InfoMemberLayout import Ui_MainWindow
 from src.activity.EditMemberActivity import EditMemberActivity
 from src.constants.Global import NOI_TRU, NGOAI_TRU, MANAGER, DOCTOR
 from src.service.ConfigService import ConfigService
 from src.service.MemberService import MemberService
+from src.utils.comon import readImage
 from src.utils.ecportPDF import write_to_pdf_with_image_and_content
 
 
@@ -25,6 +29,12 @@ class InfoMemberActivity(QMainWindow, Ui_MainWindow):
         self.showMaximized()
         self.isEdit = 'False'
         self.configService = ConfigService()
+        self.loadingWidget = LoadingWidget(self)
+        self.loadingWidget.startLoading()
+
+        # load_dotenv()
+
+        self.isServert = os.getenv('IS_SEVER')
 
         self.setWindowTitle("Thông tin bệnh nhân")
         self.parent = parent
@@ -33,9 +43,12 @@ class InfoMemberActivity(QMainWindow, Ui_MainWindow):
         self.listTrieuChung = dict()
         self.listBenhLyKhac = dict()
         self.listThuocDieuTri = dict()
-
         self.initUi()
+
+
         self.handleEvent()
+
+
 
     def handleEvent(self):
         self.btnBack.clicked.connect(self.closeWin)
@@ -44,22 +57,13 @@ class InfoMemberActivity(QMainWindow, Ui_MainWindow):
         self.btnPrint.clicked.connect(self.print)
 
     def print(self):
-        nameManager = self.configService.getByKey(MANAGER)
-        nameDoctor = self.configService.getByKey(DOCTOR)
-        if nameManager is None:
-            nameManager = ""
-        else:
-            nameManager = nameManager.Value
+        self.loadingWidget.startLoading()
+        self.loadingPrint = LoadingPrint(self)
+        self.loadingPrint.printSignal.connect(self.printSignal)
+        self.loadingPrint.start()
+    def printSignal(self, isSuccess):
+        self.loadingWidget.stopTopLoading()
 
-        if nameDoctor is None:
-            nameDoctor = ""
-        else:
-            nameDoctor = nameDoctor.Value
-        write_to_pdf_with_image_and_content("assets/print.pdf", self.member, nameManager, nameDoctor)
-        # get the path of the current directory
-        current_dir = os.getcwd()
-        urlFile = current_dir + "/assets/print.pdf"
-        webbrowser.open(urlFile)
 
     def export(self):
         options = QtWidgets.QFileDialog.Options()
@@ -182,9 +186,22 @@ class InfoMemberActivity(QMainWindow, Ui_MainWindow):
             if i < len(listMedicine) and listMedicine[i] != "":
                 self.listThuocDieuTri[list(self.listThuocDieuTri.keys())[i]].setText("- " + listMedicine[i])
 
-        urlAvatar = self.member.Avatar
-        if os.path.exists(urlAvatar) and os.path.isfile(urlAvatar):
-            self.label.setPixmap(QtGui.QPixmap(urlAvatar))
+        if int(self.isServert) == 1:
+            urlAvatar = self.member.Avatar
+            if os.path.exists(urlAvatar) and os.path.isfile(urlAvatar):
+                self.label.setPixmap(QtGui.QPixmap(urlAvatar))
+            self.loadingWidget.stopTopLoading()
+        else:
+            self.l = Loading(member=self.member)
+            self.l.start()
+            self.l.imageSignal.connect(self.loadImagge)
+
+
+    def loadImagge(self,p):
+        if p is not None:
+            self.label.setPixmap(QtGui.QPixmap(p))
+        self.loadingWidget.stopTopLoading()
+
 
     def getText(self, text):
         if text == None or text == "":
@@ -201,3 +218,45 @@ class InfoMemberActivity(QMainWindow, Ui_MainWindow):
         list[id].setWordWrap(True)
         list[id].setObjectName(id)
         verticalLayout.addWidget(list[id])
+
+class Loading(QThread):
+    imageSignal = pyqtSignal(object)
+    def __init__(self, member=None):
+        super(Loading, self).__init__()
+        self.member = member
+
+    def run(self):
+        urlAvatar = self.member.Avatar
+        p = readImage(urlAvatar)
+        self.imageSignal.emit(p)
+
+class LoadingPrint(QThread):
+    printSignal = pyqtSignal(bool)
+    def __init__(self, parent=None):
+        super(LoadingPrint, self).__init__(parent)
+        self.configService = ConfigService()
+        self.parent = parent
+    def run(self):
+
+       try:
+           nameManager = self.configService.getByKey(MANAGER)
+           nameDoctor = self.configService.getByKey(DOCTOR)
+           if nameManager is None:
+               nameManager = ""
+           else:
+               nameManager = nameManager.Value
+
+           if nameDoctor is None:
+               nameDoctor = ""
+           else:
+               nameDoctor = nameDoctor.Value
+           write_to_pdf_with_image_and_content("assets/print.pdf", self.parent.member, nameManager, nameDoctor)
+           # get the path of the current directory
+           current_dir = os.getcwd()
+           urlFile = current_dir + "/assets/print.pdf"
+           webbrowser.open(urlFile)
+           self.printSignal.emit(True)
+       except Exception as e:
+              print(e)
+              self.printSignal.emit(False)
+

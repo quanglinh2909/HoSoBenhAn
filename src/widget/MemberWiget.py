@@ -1,3 +1,4 @@
+import os
 import uuid
 from datetime import datetime
 
@@ -15,6 +16,7 @@ from src.model.Member import Member
 from src.service.MemberService import MemberService
 from src.utils.ExportExcel import create_excel_file
 from src.utils.Notification import confirmMessageBox
+from src.utils.comon import readImage
 
 
 class MemberWiget(QMainWindow, Ui_Form):
@@ -22,6 +24,7 @@ class MemberWiget(QMainWindow, Ui_Form):
         super(MemberWiget, self).__init__(context)
         self.setupUi(context)
         self.parent = parent
+        self.isServert = os.getenv('IS_SEVER')
 
         self.memberService = MemberService()
         self.page = 1
@@ -143,18 +146,20 @@ class MemberWiget(QMainWindow, Ui_Form):
             self.tbMember.setItem(row, 3, QtWidgets.QTableWidgetItem(self.getText(address)))
             self.tbMember.setItem(row, 4, QtWidgets.QTableWidgetItem(self.getText(item.Relatives)))
             self.tbMember.setItem(row, 5, QtWidgets.QTableWidgetItem(self.getText(item.DateIn)))
-            image = QtGui.QImage()
-            url = item.Avatar
-            if url == None or url == "":
-                url = "res/drawable/icons/vatar.jpg"
-            pixmap = QPixmap(url)
-            pixmap = pixmap.scaled(90, 90, Qt.KeepAspectRatio, Qt.FastTransformation)
-            image = QLabel()
-            image.setPixmap(pixmap)
-
-            self.tbMember.setCellWidget(row, 6, image)
-            # set center
-            self.tbMember.cellWidget(row, 6).setAlignment(Qt.AlignCenter)
+            # image = QtGui.QImage()
+            if int(self.isServert) == 1:
+                url = item.Avatar
+                if url == None or url == "":
+                    url = "res/drawable/icons/vatar.jpg"
+                pixmap = QPixmap(url)
+                image = QLabel()
+                image.setPixmap(pixmap)
+                self.tbMember.setCellWidget(row, 6, image)
+                # set center
+                self.tbMember.cellWidget(row, 6).setAlignment(Qt.AlignCenter)
+            else:
+                # an cot 6
+                self.tbMember.setColumnHidden(6, True)
 
             iconDelete = QIcon("res/drawable/icons/delete_red_icon.svg")
             btnDelete = QtWidgets.QPushButton()

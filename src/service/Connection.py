@@ -1,5 +1,7 @@
+import os
 import uuid
 
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -15,8 +17,17 @@ class Connection():
         if Connection.__instance != None:
             raise Exception("This class is a singleton!")
         else:
+            load_dotenv()
+
+            address = os.getenv("ADDRESS")
+            port = os.getenv("PORT")
+            user = os.getenv("USER")
+            password = os.getenv("PASS")
+            dbName = os.getenv("DB_NAME")
+
             Connection.__instance = self
-            self.engine = create_engine('sqlite:///{}'.format(PATH_DATABASE))
+            print('mariadb+mariadbconnector://'+str(user)+':'+str(password)+'@'+str(address)+':'+str(port)+'/'+str(dbName))
+            self.engine = create_engine('mariadb+mariadbconnector://'+str(user)+':'+str(password)+'@'+str(address)+':'+str(port)+'/'+str(dbName))
             Base.metadata.create_all(self.engine)
             self.DBSession = sessionmaker(bind=self.engine)
             self.session = self.DBSession()

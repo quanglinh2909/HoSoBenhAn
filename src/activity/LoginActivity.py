@@ -2,11 +2,13 @@ import os
 
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QMainWindow
+from dotenv import load_dotenv
 
 from res.components.Loading import LoadingWidget
 from res.components.pyqt_toast.toast import Toast
 from res.layout.LoginLayout import Ui_MainWindow
 from src.activity.MainActivity import MainWindowActivity
+from src.service.APIServer import Server
 from src.service.UserService import UserService
 
 
@@ -15,8 +17,13 @@ class LoginActivity(QMainWindow, Ui_MainWindow):
         super(LoginActivity, self).__init__()
         self.setupUi(self)
         self.showMaximized()
-        self.setWindowTitle("Quản lý bệnh nhân")
+        self.setWindowTitle("Cơ sở BTXH. Ân Phúc")
         self.userService = UserService()
+        load_dotenv()
+        isServer = os.getenv("IS_SEVER")
+        if int(isServer) == 1:
+            self.server = Server()
+            self.server.start()
 
         self.UserNameTxt.setFocus()
 

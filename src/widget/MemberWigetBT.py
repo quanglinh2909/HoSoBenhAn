@@ -1,3 +1,4 @@
+import os
 import uuid
 from datetime import datetime
 
@@ -24,6 +25,8 @@ class MemberWigetBT(QMainWindow, Ui_Form):
         self.parent = parent
 
         self.memberService = MemberService()
+        self.isServert = os.getenv('IS_SEVER')
+
         self.page = 1
         self.count = 0
         self.list = []
@@ -144,17 +147,21 @@ class MemberWigetBT(QMainWindow, Ui_Form):
             self.tbMember.setItem(row, 4, QtWidgets.QTableWidgetItem(self.getText(item.Relatives)))
             self.tbMember.setItem(row, 5, QtWidgets.QTableWidgetItem(self.getText(item.DateIn)))
             image = QtGui.QImage()
-            url = item.Avatar
-            if url == None or url == "":
-                url = "res/drawable/icons/vatar.jpg"
-            pixmap = QPixmap(url)
-            pixmap = pixmap.scaled(90, 90, Qt.KeepAspectRatio, Qt.FastTransformation)
-            image = QLabel()
-            image.setPixmap(pixmap)
+            if int(self.isServert) == 1:
+                url = item.Avatar
+                if url == None or url == "":
+                    url = "res/drawable/icons/vatar.jpg"
+                pixmap = QPixmap(url)
+                image = QLabel()
+                image.setPixmap(pixmap)
+                self.tbMember.setCellWidget(row, 6, image)
+                # set center
+                self.tbMember.cellWidget(row, 6).setAlignment(Qt.AlignCenter)
+            else:
+                # an cot 6
+                self.tbMember.setColumnHidden(6, True)
 
-            self.tbMember.setCellWidget(row, 6, image)
-            # set center
-            self.tbMember.cellWidget(row, 6).setAlignment(Qt.AlignCenter)
+
 
             iconDelete = QIcon("res/drawable/icons/delete_red_icon.svg")
             btnDelete = QtWidgets.QPushButton()

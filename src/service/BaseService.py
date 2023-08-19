@@ -13,6 +13,7 @@ class BaseService():
         try:
             self.session.add(data)
             self.session.commit()
+            self.session.refresh(data)
             return True
         except Exception as e:
             print(e)
