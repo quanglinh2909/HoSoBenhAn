@@ -25,7 +25,6 @@ class BaseService():
         try:
             self.session.merge(data)
             self.session.commit()
-            self.session.flush()
 
             return True
         except Exception as e:
