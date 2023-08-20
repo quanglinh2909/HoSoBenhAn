@@ -8,12 +8,18 @@ class ConfigService(BaseService):
 
     def getById(self, id):
         try:
+            self.session = self.DBSession()
             return self.session.query(Config).filter(Config.ID == id).first()
         except Exception as e:
             return None
+        finally:
+            self.session.close()
 
     def getByKey(self, key):
         try:
+            self.session = self.DBSession()
             return self.session.query(Config).filter(Config.Key == key).first()
         except Exception as e:
             return None
+        finally:
+            self.session.close()

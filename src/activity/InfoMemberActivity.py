@@ -31,6 +31,7 @@ class InfoMemberActivity(QMainWindow, Ui_MainWindow):
         self.configService = ConfigService()
         self.loadingWidget = LoadingWidget(self)
         self.loadingWidget.startLoading()
+        self.memberService = MemberService()
 
         # load_dotenv()
 
@@ -38,7 +39,8 @@ class InfoMemberActivity(QMainWindow, Ui_MainWindow):
 
         self.setWindowTitle("Thông tin bệnh nhân")
         self.parent = parent
-        self.member = member
+        if member is not None:
+            self.member = self.memberService.getById(member.ID)
 
         self.listTrieuChung = dict()
         self.listBenhLyKhac = dict()

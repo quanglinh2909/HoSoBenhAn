@@ -125,6 +125,7 @@ class MemberWiget(QMainWindow, Ui_Form):
 
         row = 0
         self.count = int(self.page * 100 - 100)
+        self.count = int(self.page * 100 - 100)
         self.tbMember.setRowCount(len(self.list))
         for item in self.list:
             self.tbMember.setRowHeight(row, 100)

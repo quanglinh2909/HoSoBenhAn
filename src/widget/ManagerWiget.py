@@ -28,6 +28,8 @@ class ManagerWiget(QMainWindow, Ui_Form):
     def changeTab(self):
         indexPage = self.managemenTab.currentIndex()
         if indexPage == 0:
+            print("load data")
             self.memberWiget.loadData()
         else:
+            print("load data 2")
             self.memberWigetBT.loadData()
